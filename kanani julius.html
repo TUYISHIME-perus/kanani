@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Julius Grandius – Content Planner</title>
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+--bg:#f3efe8;--bg2:#e9dfd0;--card:rgba(255,255,255,.72);--solid:#fff;--ink:#1d1b16;--mute:#6b665b;--line:rgba(60,45,20,.14);--accent:#b4501e;--accent2:#e0953a;--accent-ink:#fff;--danger:#b3261e;--shadow:0 10px 30px rgba(80,50,10,.12)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#13110d;--bg2:#241a10;--card:rgba(38,33,26,.72);--solid:#26211a;--ink:#f1ede3;--mute:#a39d8e;--line:rgba(255,235,200,.12);--accent:#e07a40;--accent2:#f0b25a;--accent-ink:#15130f;--danger:#f2706a;--shadow:0 10px 30px rgba(0,0,0,.5)}}
+:root[data-theme="dark"]{--bg:#13110d;--bg2:#241a10;--card:rgba(38,33,26,.72);--solid:#26211a;--ink:#f1ede3;--mute:#a39d8e;--line:rgba(255,235,200,.12);--accent:#e07a40;--accent2:#f0b25a;--accent-ink:#15130f;--danger:#f2706a;--shadow:0 10px 30px rgba(0,0,0,.5)}
+*,*:before,*:after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px);height:100%}
+body{margin:0;min-height:100%;color:var(--ink);font:16px/1.6 Georgia,"Times New Roman",serif;background:radial-gradient(900px 500px at 10% -10%,color-mix(in srgb,var(--accent2) 25%,transparent),transparent),radial-gradient(800px 500px at 100% 0,color-mix(in srgb,var(--accent) 18%,transparent),transparent),linear-gradient(160deg,var(--bg),var(--bg2));background-attachment:fixed}
+h1,h2,h3,label,button,input,select,.tag,.tb{font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
+.hidden{display:none!important}
+input,select{width:100%;padding:11px 13px;border:1px solid var(--line);border-radius:10px;background:var(--solid);color:var(--ink);font-size:15px;transition:box-shadow .2s,border-color .2s}
+input:focus,select:focus,#ed:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 4px color-mix(in srgb,var(--accent) 22%,transparent)}
+label{display:block;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--mute);margin:14px 0 5px}
+button{cursor:pointer;border:1px solid var(--line);background:var(--solid);color:var(--ink);padding:9px 15px;border-radius:10px;font-size:14px;transition:transform .15s,box-shadow .2s,background .2s}
+button:hover{transform:translateY(-2px);box-shadow:var(--shadow)}
+button:active{transform:translateY(0)}
+button.primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:var(--accent-ink);border:0;font-weight:700}
+button.danger{color:var(--danger)}
+.glass{background:var(--card);backdrop-filter:blur(14px) saturate(1.3);-webkit-backdrop-filter:blur(14px) saturate(1.3);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow)}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes shake{25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+.rise{animation:rise .45s ease both}
+#login{min-height:100vh;display:grid;place-items:center;padding:20px}
+.box{padding:32px;width:100%;max-width:390px}
+.box h1{margin:0 0 4px;font-size:30px;letter-spacing:-.6px;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.box.bad{animation:shake .35s}
+.sub{color:var(--mute);margin:0 0 6px;font-size:14px;font-family:system-ui,sans-serif}
+.err{color:var(--danger);font-size:14px;margin:10px 0 0;min-height:20px;font-family:system-ui,sans-serif}
+.box button.primary{width:100%;margin-top:12px;padding:12px}
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 20px;flex-wrap:wrap;border-radius:0 0 18px 18px}
+header h1{margin:0;font-size:20px;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;background-clip:text;color:transparent}
+nav{display:flex;gap:6px;background:var(--solid);padding:4px;border-radius:12px;border:1px solid var(--line)}
+nav a{padding:7px 14px;border-radius:9px;text-decoration:none;color:var(--mute);font:600 14px system-ui,sans-serif;cursor:pointer;transition:.2s}
+nav a.on{background:linear-gradient(135deg,var(--accent),var(--accent2));color:var(--accent-ink)}
+nav a span{opacity:.8;margin-left:4px}
+main{max-width:980px;margin:0 auto;padding:20px}
+.panel{padding:22px}
+.panel h2{margin:0;font-size:19px}
+.row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+@media(max-width:640px){.row{grid-template-columns:1fr}}
+.actions{display:flex;gap:8px;margin-top:16px;flex-wrap:wrap;align-items:center}
+.tools{display:flex;flex-wrap:wrap;gap:4px;padding:8px;background:var(--solid);border:1px solid var(--line);border-bottom:0;border-radius:12px 12px 0 0}
+.tb{padding:6px 10px;min-width:34px;font-size:14px;border-radius:7px}
+.tb.on{background:var(--accent);color:var(--accent-ink)}
+.sep{width:1px;background:var(--line);margin:2px 4px}
+#ed{min-height:260px;max-height:60vh;overflow:auto;padding:16px;background:var(--solid);border:1px solid var(--line);border-radius:0 0 12px 12px;line-height:1.7}
+#ed:empty:before{content:attr(data-ph);color:var(--mute)}
+#ed h2,.view h2{font-size:22px;margin:.5em 0}#ed h3,.view h3{font-size:18px;margin:.5em 0}
+#ed blockquote,.view blockquote{margin:.6em 0;padding:.2em 1em;border-left:4px solid var(--accent);color:var(--mute)}
+#ed a,.view a{color:var(--accent)}
+.wc{margin-left:auto;font:12px system-ui,sans-serif;color:var(--mute)}
+.bar{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0}
+.bar input{flex:2;min-width:150px}.bar select{flex:1;min-width:120px}
+.items{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:14px}
+.item{padding:16px;border:1px solid var(--line);border-radius:14px;background:var(--solid);transition:transform .2s,box-shadow .2s;animation:rise .4s ease both;display:flex;flex-direction:column}
+.item:hover{transform:translateY(-4px);box-shadow:var(--shadow)}
+.item h3{margin:0 0 4px;font-size:16px}
+.meta{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0;font-size:12px}
+.tag{padding:2px 9px;border-radius:99px;border:1px solid var(--line);color:var(--mute)}
+.tag.s-Published{background:linear-gradient(135deg,var(--accent),var(--accent2));color:var(--accent-ink);border:0}
+.prev{color:var(--mute);font-size:14px;margin:4px 0 12px;flex:1;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.item .actions{margin-top:0}
+.empty{color:var(--mute);text-align:center;padding:30px;grid-column:1/-1}
+.view{padding:22px;background:var(--solid);border:1px solid var(--line);border-radius:14px;margin-top:14px;overflow-wrap:anywhere}
+.back{margin-bottom:6px}
+</style>
+</head>
+<body>
+
+<section id="login">
+  <div class="box glass rise" id="box">
+    <h1>Julius Grandius</h1>
+    <p class="sub">Sign in to your content planner</p>
+    <label for="em">Email</label>
+    <input id="em" type="email" autocomplete="username" placeholder="you@example.com">
+    <label for="pw">Password</label>
+    <input id="pw" type="password" autocomplete="current-password" placeholder="Password">
+    <p class="err" id="err"></p>
+    <button class="primary" id="loginBtn">Sign in</button>
+  </div>
+</section>
+
+<section id="app" class="hidden">
+  <header class="glass">
+    <h1>Julius Grandius</h1>
+    <nav>
+      <a id="nEdit" class="on">✏️ Editor</a>
+      <a id="nSaved">📁 Saved projects<span id="cnt"></span></a>
+    </nav>
+    <button id="logout">Log out</button>
+  </header>
+
+  <main>
+    <div id="vEdit" class="panel glass rise">
+      <h2 id="formTitle">New project</h2>
+      <p class="sub">Write like in Word — Ctrl+B / I / U, Ctrl+Z / Y, Ctrl+A, Ctrl+S to save.</p>
+      <input type="hidden" id="editId">
+      <label for="title">Title</label>
+      <input id="title" placeholder="e.g. 5 tips for better sleep">
+      <div class="row">
+        <div><label for="platform">Platform</label>
+          <select id="platform"><option>Blog</option><option>YouTube</option><option>Instagram</option><option>Facebook</option><option>TikTok</option><option>LinkedIn</option><option>X / Twitter</option><option>Other</option></select></div>
+        <div><label for="date">Publish date</label><input id="date" type="date"></div>
+        <div><label for="status">Status</label>
+          <select id="status"><option>Idea</option><option>Drafting</option><option>Ready</option><option>Published</option></select></div>
+      </div>
+      <label>Content</label>
+      <div class="tools" id="tools">
+        <button class="tb" data-c="bold" title="Bold (Ctrl+B)"><b>B</b></button>
+        <button class="tb" data-c="italic" title="Italic (Ctrl+I)"><i>I</i></button>
+        <button class="tb" data-c="underline" title="Underline (Ctrl+U)"><u>U</u></button>
+        <button class="tb" data-c="strikeThrough" title="Strikethrough"><s>S</s></button>
+        <span class="sep"></span>
+        <button class="tb" data-c="formatBlock" data-v="h2" title="Heading">H1</button>
+        <button class="tb" data-c="formatBlock" data-v="h3" title="Subheading">H2</button>
+        <button class="tb" data-c="formatBlock" data-v="p" title="Paragraph">¶</button>
+        <button class="tb" data-c="formatBlock" data-v="blockquote" title="Quote">❝</button>
+        <span class="sep"></span>
+        <button class="tb" data-c="insertUnorderedList" title="Bullets">• List</button>
+        <button class="tb" data-c="insertOrderedList" title="Numbered">1. List</button>
+        <span class="sep"></span>
+        <button class="tb" data-c="justifyLeft" title="Align left">⟸</button>
+        <button class="tb" data-c="justifyCenter" title="Center">≡</button>
+        <button class="tb" data-c="justifyRight" title="Align right">⟹</button>
+        <span class="sep"></span>
+        <button class="tb" id="lnk" title="Link (Ctrl+K)">🔗</button>
+        <button class="tb" data-c="undo" title="Undo (Ctrl+Z)">↶</button>
+        <button class="tb" data-c="redo" title="Redo (Ctrl+Y)">↷</button>
+        <button class="tb" data-c="removeFormat" title="Clear formatting">⌫</button>
+      </div>
+      <div id="ed" contenteditable="true" spellcheck="true" data-ph="Start writing your plan, script or outline..."></div>
+      <div class="actions">
+        <button class="primary" id="save">💾 Save project</button>
+        <button id="cancel" class="hidden">Cancel edit</button>
+        <span class="wc" id="wc">0 words</span>
+      </div>
+    </div>
+
+    <div id="vSaved" class="panel glass hidden">
+      <div id="listWrap">
+        <h2>Saved projects</h2>
+        <div class="bar">
+          <input id="q" placeholder="Search saved projects...">
+          <select id="f"><option value="">All statuses</option><option>Idea</option><option>Drafting</option><option>Ready</option><option>Published</option></select>
+        </div>
+        <div class="items" id="list"></div>
+      </div>
+      <div id="viewWrap" class="hidden">
+        <button class="back" id="back">← Back to saved projects</button>
+        <div class="view" id="viewBox"></div>
+        <div class="actions"><button class="primary" id="vEditBtn">✏️ Edit this project</button><button class="danger" id="vDelBtn">Delete</button></div>
+      </div>
+    </div>
+  </main>
+</section>
+
+<script>
+// Credentials are not stored in plain text: only a salted SHA-256 hash is kept here.
+const HASH="211ba36591e152d1c1bfa2fb589bd9c901b97f94e535dad05cdec7a6531bc62c";
+const $=id=>document.getElementById(id);
+let items=[],viewId=null;
+
+function load(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}}
+function store(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
+async function sha(s){const b=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(s));return[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,"0")).join("")}
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function clean(html){
+  const d=new DOMParser().parseFromString(html||"","text/html");
+  d.querySelectorAll("script,style,iframe,object,embed,link,meta").forEach(n=>n.remove());
+  d.body.querySelectorAll("*").forEach(n=>[...n.attributes].forEach(a=>{
+    if(/^on/i.test(a.name)||(/^(href|src)$/i.test(a.name)&&/^\s*javascript:/i.test(a.value)))n.removeAttribute(a.name)}));
+  return d.body.innerHTML;
+}
+function text(html){const d=document.createElement("div");d.innerHTML=clean(html);return d.textContent.trim()}
+
+/* ---- auth ---- */
+async function login(){
+  const h=await sha("jg-salt-v1|"+$("em").value.trim().toLowerCase()+"|"+$("pw").value);
+  if(h===HASH){$("err").textContent="";store("jg_auth",true);$("pw").value="";showApp(true)}
+  else{$("err").textContent="Incorrect email or password.";$("box").classList.remove("bad");void $("box").offsetWidth;$("box").classList.add("bad")}
+}
+$("loginBtn").onclick=login;
+["em","pw"].forEach(i=>$(i).addEventListener("keydown",e=>{if(e.key==="Enter")login()}));
+$("logout").onclick=()=>{store("jg_auth",false);showApp(false)};
+function showApp(on){
+  $("login").classList.toggle("hidden",on);$("app").classList.toggle("hidden",!on);
+  if(on){items=load("jg_items",[]);go("edit")}
+}
+
+/* ---- navigation ---- */
+function go(v){
+  $("vEdit").classList.toggle("hidden",v!=="edit");$("vSaved").classList.toggle("hidden",v!=="saved");
+  $("nEdit").classList.toggle("on",v==="edit");$("nSaved").classList.toggle("on",v==="saved");
+  if(v==="saved"){$("listWrap").classList.remove("hidden");$("viewWrap").classList.add("hidden");render()}
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+$("nEdit").onclick=()=>go("edit");$("nSaved").onclick=()=>go("saved");
+
+/* ---- editor ---- */
+const ed=$("ed");
+function wc(){const t=ed.innerText.trim();$("wc").textContent=(t?t.split(/\s+/).length:0)+" words"}
+ed.addEventListener("input",wc);
+$("tools").addEventListener("mousedown",e=>e.preventDefault());
+$("tools").addEventListener("click",e=>{
+  const b=e.target.closest("button[data-c]");if(!b)return;
+  ed.focus();document.execCommand(b.dataset.c,false,b.dataset.v||null);wc();
+});
+function addLink(){
+  const u=prompt("Link address (https://...)");
+  if(u){ed.focus();document.execCommand("createLink",false,/^https?:/i.test(u)?u:"https://"+u)}
+}
+$("lnk").onclick=addLink;
+ed.addEventListener("keydown",e=>{
+  if(!(e.ctrlKey||e.metaKey))return;
+  const k=e.key.toLowerCase();
+  if(k==="s"){e.preventDefault();save()}
+  else if(k==="k"){e.preventDefault();addLink()}
+});
+document.addEventListener("keydown",e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==="s"&&!$("vEdit").classList.contains("hidden")){e.preventDefault();save()}});
+
+function resetForm(){
+  ["editId","title","date"].forEach(i=>$(i).value="");
+  $("platform").selectedIndex=0;$("status").selectedIndex=0;ed.innerHTML="";wc();
+  $("formTitle").textContent="New project";$("cancel").classList.add("hidden");
+}
+$("cancel").onclick=resetForm;
+function save(){
+  const title=$("title").value.trim();
+  if(!title){$("title").focus();return}
+  const data={title,platform:$("platform").value,date:$("date").value,status:$("status").value,notes:clean(ed.innerHTML),updated:Date.now()};
+  const id=$("editId").value;
+  if(id)items=items.map(x=>x.id===id?{...x,...data}:x);else items.unshift({id:Date.now().toString(36),...data});
+  store("jg_items",items);resetForm();go("saved");
+}
+$("save").onclick=save;
+function edit(id){
+  const x=items.find(i=>i.id===id);if(!x)return;
+  $("editId").value=x.id;$("title").value=x.title;$("platform").value=x.platform;
+  $("date").value=x.date;$("status").value=x.status;ed.innerHTML=clean(x.notes);wc();
+  $("formTitle").textContent="Editing: "+x.title;$("cancel").classList.remove("hidden");go("edit");
+}
+function del(id){
+  if(!confirm("Delete this project?"))return;
+  items=items.filter(i=>i.id!==id);store("jg_items",items);go("saved");
+}
+
+/* ---- saved projects ---- */
+function render(){
+  $("cnt").textContent=items.length?"("+items.length+")":"";
+  const q=$("q").value.toLowerCase(),f=$("f").value;
+  const shown=items.filter(i=>(!f||i.status===f)&&(i.title+" "+text(i.notes)+" "+i.platform).toLowerCase().includes(q));
+  $("list").innerHTML=shown.length?shown.map(i=>`
+    <div class="item"><h3>${esc(i.title)}</h3>
+      <div class="meta"><span class="tag">${esc(i.platform)}</span><span class="tag s-${esc(i.status)}">${esc(i.status)}</span>${i.date?`<span class="tag">${esc(i.date)}</span>`:""}</div>
+      <div class="prev">${esc(text(i.notes))||"<i>No content</i>"}</div>
+      <div class="actions"><button class="primary" data-v="${i.id}">👁 View</button><button data-e="${i.id}">Edit</button><button class="danger" data-d="${i.id}">Delete</button></div>
+    </div>`).join(""):`<div class="empty">${items.length?"No matches.":"No saved projects yet. Write one in the Editor and press Save."}</div>`;
+}
+$("list").onclick=e=>{const b=e.target.closest("button");if(!b)return;
+  if(b.dataset.v)openView(b.dataset.v);if(b.dataset.e)edit(b.dataset.e);if(b.dataset.d)del(b.dataset.d)};
+function openView(id){
+  const x=items.find(i=>i.id===id);if(!x)return;viewId=id;
+  $("viewBox").innerHTML=`<h2 style="margin-top:0">${esc(x.title)}</h2>
+    <div class="meta"><span class="tag">${esc(x.platform)}</span><span class="tag s-${esc(x.status)}">${esc(x.status)}</span>${x.date?`<span class="tag">${esc(x.date)}</span>`:""}</div><hr style="border:0;border-top:1px solid var(--line)">${clean(x.notes)||"<i>No content</i>"}`;
+  $("listWrap").classList.add("hidden");$("viewWrap").classList.remove("hidden");
+}
+$("back").onclick=()=>go("saved");
+$("vEditBtn").onclick=()=>edit(viewId);
+$("vDelBtn").onclick=()=>del(viewId);
+$("q").oninput=render;$("f").onchange=render;
+showApp(load("jg_auth",false)===true);
+</script>
+</body>
+</html>
